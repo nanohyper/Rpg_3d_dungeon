@@ -17,12 +17,33 @@ export class FloorData {
     }
 
     /**
-     * マップチップを得る
+     * マップの範囲内か？
+     * @param x
+     * @param y 
+     */
+    public isInside(x : number, y : number) {
+        return 0 <= x && x < this.width && 0 <= y && y < this.height;
+    }
+
+    /**
+     * マップの範囲外か？
      * @param x 
      * @param y 
      * @returns 
      */
-    public getMapChip(x : number, y : number) {
+    public isOutside(x : number, y : number) {
+        return !this.isInside(x, y);
+    }
+
+    /**
+     * マップチップを得る
+     * @param x 
+     * @param y 
+     * @param outsideMapChip マップ範囲外のときこのマップチップで扱う
+     * @returns 
+     */
+    public getMapChip(x : number, y : number, outsideMapChip = MapChip.wall) {
+        if(this.isOutside(x, y)) return outsideMapChip
         return this.mapData[y * this.width + x];
     }
 
@@ -42,7 +63,7 @@ export class FloorData {
      * @param y 
      */
     public canStep(x : number, y : number) {
-        if(0 <= x && x < this.width && 0 <= y && y < this.height) {
+        if(this.isInside(x, y)) {
             let mapChip = this.getMapChip(x, y);
             if(mapChip == MapChip.wall) {
                 // 壁

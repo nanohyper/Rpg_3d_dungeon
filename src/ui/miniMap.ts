@@ -14,7 +14,7 @@ export class MiniMap extends ExContainer{
 
     private _graphics : Phaser.GameObjects.Graphics;
 
-    public player : Player
+    public player : Player;
     public floorData : FloorData;
 
     constructor(scene : Scene, x : number, y : number, width : number, height : number, player : Player, floorData : FloorData) {

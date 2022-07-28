@@ -1,11 +1,16 @@
+import { Direction } from "../defines/direction";
 import { PlayerManager } from "../managers/playerManager";
 import { FloorData } from "../models/floorData";
 import { Player } from "../models/player";
+import { GameHelper } from "../modules/gameHelper";
 import { MapCreator } from "../modules/mapCreator";
 import { MiniMap } from "../ui/miniMap";
+import { ThreedMap } from "../ui/threedMap";
 
 export default class MainScene extends Phaser.Scene
 {
+    // 3Dマップ
+    threedMap : ThreedMap;
     // ミニマップ
     miniMap : MiniMap;
 
@@ -39,6 +44,10 @@ export default class MainScene extends Phaser.Scene
         player.y = 1;
         PlayerManager.instance.player = player;
 
+        // 3Dマップ
+        this.threedMap = new ThreedMap(this, 0, 0, this.game.canvas.width, this.game.canvas.width, player, floorData);
+        this.add.group(this.threedMap, { runChildUpdate: true });
+
         // ミニマップ
         this.miniMap = new MiniMap(this, this.game.canvas.width - 120, 0, 120, 120, player, floorData);
         this.add.group(this.miniMap, { runChildUpdate: true });
@@ -69,6 +78,8 @@ export default class MainScene extends Phaser.Scene
     turnLeft() {
         let player = PlayerManager.instance.player;
         player.direction = (player.direction + 4 - 1) % 4;
+        // 3Dマップ更新
+        this.threedMap.refresh();
         // ミニマップ更新
         this.miniMap.refresh();
     }
@@ -79,6 +90,8 @@ export default class MainScene extends Phaser.Scene
     turnRight() {
         let player = PlayerManager.instance.player;
         player.direction = (player.direction + 1) % 4;
+        // 3Dマップ更新
+        this.threedMap.refresh();
         // ミニマップ更新
         this.miniMap.refresh();
     }
@@ -89,14 +102,16 @@ export default class MainScene extends Phaser.Scene
     goForward() {
         let player = PlayerManager.instance.player;
         let floorData = PlayerManager.instance.floorData;
-        const deltaPoints = [[-1, 0], [0, -1], [1, 0], [0, 1]];
-        let newx = player.x + deltaPoints[player.direction][0];
-        let newy = player.y + deltaPoints[player.direction][1];
+        let delta = GameHelper.getMoveDelta(player.direction, Direction.top);
+        let newx = player.x + delta.x;
+        let newy = player.y + delta.y;
         if(floorData.canStep(newx, newy)) {
             player.x = newx;
             player.y = newy;
+            // 3Dマップ更新
+            this.threedMap.refresh();
             // ミニマップ更新
-            this.miniMap.refresh();
+            this.miniMap.refresh();;
         }
     }
 
@@ -112,6 +127,8 @@ export default class MainScene extends Phaser.Scene
         if(floorData.canStep(newx, newy)) {
             player.x = newx;
             player.y = newy;
+            // 3Dマップ更新
+            this.threedMap.refresh();
             // ミニマップ更新
             this.miniMap.refresh();
         }
