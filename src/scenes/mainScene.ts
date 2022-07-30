@@ -4,6 +4,7 @@ import { FloorData } from "../models/floorData";
 import { Player } from "../models/player";
 import { GameHelper } from "../modules/gameHelper";
 import { MapCreator } from "../modules/mapCreator";
+import { Button } from "../ui/button";
 import { MiniMap } from "../ui/miniMap";
 import { ThreedMap } from "../ui/threedMap";
 
@@ -13,6 +14,11 @@ export default class MainScene extends Phaser.Scene
     threedMap : ThreedMap;
     // ミニマップ
     miniMap : MiniMap;
+    // ボタン
+    leftButton : Button;
+    forwardButton : Button;
+    rightButton : Button;
+    backButton : Button;
 
     // カーソルキー
     cursorKey : Phaser.Types.Input.Keyboard.CursorKeys;
@@ -51,6 +57,25 @@ export default class MainScene extends Phaser.Scene
         // ミニマップ
         this.miniMap = new MiniMap(this, this.game.canvas.width - 120, 0, 120, 120, player, floorData);
         this.add.group(this.miniMap, { runChildUpdate: true });
+
+        // ボタン
+        this.leftButton = new Button(this, 180, 400, 40, 40, {
+            text : "←",
+            onClick : () => this.turnLeft()
+        });
+        this.forwardButton = new Button(this, 240, 400, 40, 40, {
+            text : "↑",
+            onClick : () => this.goForward()
+        })
+        this.rightButton = new Button(this, 300, 400, 40, 40, {
+            text : "→",
+            onClick : () => this.turnRight()
+        })
+        this.backButton = new Button(this, 240, 460, 40, 40, {
+            text : "↓",
+            onClick : () => this.goBack()
+        })
+
 
         // カーソルキー
         this.cursorKey = this.input.keyboard.createCursorKeys();

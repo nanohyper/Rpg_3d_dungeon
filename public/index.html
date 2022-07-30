@@ -4,13 +4,26 @@
     <meta charset="UTF-8">
     <title>3D Dungeon RPG</title>
     <style type="text/css">
+      @font-face
+      {
+        font-family: PixelMplus12;
+        src: url('./assets/fonts/PixelMplus12-Regular.ttf') format("truetype");
+      }
       body {
         margin: 0;
+      }
+      .font_preload_pixel_mplus_12
+      {
+        font-family: PixelMPlus12;
+        position: absolute;
+        left: -100px;
       }
     </style>
     <script src="bundle.js" ></script>
   </head>
   <body>
     <div id="game"></div>
+    <!-- カスタムフォント -->
+    <div class="font_preload_pixel_mplus_12">.</div>
   </body>
 </html>
