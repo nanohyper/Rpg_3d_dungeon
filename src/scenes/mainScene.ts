@@ -50,28 +50,31 @@ export default class MainScene extends Phaser.Scene
         player.y = 1;
         PlayerManager.instance.player = player;
 
+        // 初期の踏破情報更新
+        floorData.setTraversedAround(player.x, player.y, player.direction);
+
         // 3Dマップ
         this.threedMap = new ThreedMap(this, 0, 0, this.game.canvas.width, this.game.canvas.width, player, floorData);
         this.add.group(this.threedMap, { runChildUpdate: true });
 
         // ミニマップ
-        this.miniMap = new MiniMap(this, this.game.canvas.width - 120, 0, 120, 120, player, floorData);
+        this.miniMap = new MiniMap(this, 0, 360, 160, 160, player, floorData);
         this.add.group(this.miniMap, { runChildUpdate: true });
 
         // ボタン
-        this.leftButton = new Button(this, 180, 400, 40, 40, {
+        this.leftButton = new Button(this, 180, 400, 44, 44, {
             text : "←",
             onClick : () => this.turnLeft()
         });
-        this.forwardButton = new Button(this, 240, 400, 40, 40, {
+        this.forwardButton = new Button(this, 240, 400, 44, 44, {
             text : "↑",
             onClick : () => this.goForward()
         })
-        this.rightButton = new Button(this, 300, 400, 40, 40, {
+        this.rightButton = new Button(this, 300, 400, 44, 44, {
             text : "→",
             onClick : () => this.turnRight()
         })
-        this.backButton = new Button(this, 240, 460, 40, 40, {
+        this.backButton = new Button(this, 240, 460, 44, 44, {
             text : "↓",
             onClick : () => this.goBack()
         })
@@ -101,20 +104,25 @@ export default class MainScene extends Phaser.Scene
      * 左旋回
      */
     turnLeft() {
-        let player = PlayerManager.instance.player;
-        player.direction = (player.direction + 4 - 1) % 4;
-        // 3Dマップ更新
-        this.threedMap.refresh();
-        // ミニマップ更新
-        this.miniMap.refresh();
+        this.turn(-1);
     }
 
     /**
      * 右旋回
      */
     turnRight() {
+        this.turn(1);
+    }
+
+    /**
+     * 旋回
+     */
+    turn(deltaDirection : number) {
         let player = PlayerManager.instance.player;
-        player.direction = (player.direction + 1) % 4;
+        let floorData = PlayerManager.instance.floorData;
+        player.direction = (player.direction + 4 + deltaDirection) % 4;
+        // その周囲を踏破済みにする
+        floorData.setTraversedAround(player.x, player.y, player.direction);
         // 3Dマップ更新
         this.threedMap.refresh();
         // ミニマップ更新
@@ -133,6 +141,8 @@ export default class MainScene extends Phaser.Scene
         if(floorData.canStep(newx, newy)) {
             player.x = newx;
             player.y = newy;
+            // 移動先と、その周囲を踏破済みにする
+            floorData.setTraversedAround(newx, newy, player.direction);
             // 3Dマップ更新
             this.threedMap.refresh();
             // ミニマップ更新

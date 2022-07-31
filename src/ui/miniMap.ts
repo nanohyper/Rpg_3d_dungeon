@@ -9,8 +9,8 @@ import { ExContainer } from "./exContainer";
 export class MiniMap extends ExContainer{
 
     // タイルを並べる数
-    static readonly HORIZONTAL_TILES_NUMBER = 9;
-    static readonly VERTICAL_TILES_NUMBER = 9;
+    static readonly HORIZONTAL_TILES_NUMBER = 11;
+    static readonly VERTICAL_TILES_NUMBER = 11;
 
     private _graphics : Phaser.GameObjects.Graphics;
 
@@ -55,18 +55,23 @@ export class MiniMap extends ExContainer{
             for(let dx = 0; dx < MiniMap.HORIZONTAL_TILES_NUMBER; ++dx) {
                 let x = startx + dx;
                 let color = 0;
-                if(0 <= x && x < this.floorData.width &&
-                    0 <= y && y < this.floorData.height) {
-                    // マップチップを取得
-                    let mapChip = this.floorData.getMapChip(x, y);
-                    if(mapChip == MapChip.wall) {
+                if(this.floorData.isTraversed(x, y)){
+                    // 踏破済み
+                    if(this.floorData.isInside(x, y)) {
+                        // マップチップを取得
+                        let mapChip = this.floorData.getMapChip(x, y);
+                        if(mapChip == MapChip.wall) {
+                            color = Colors.Numeric.DarkBlue;
+                        } else if(mapChip == MapChip.aisle) {
+                            color = Colors.Numeric.LightBlue;
+                        }
+                    } else {
+                        // 領域外
                         color = Colors.Numeric.DarkBlue;
-                    } else if(mapChip == MapChip.aisle) {
-                        color = Colors.Numeric.LightBlue;
                     }
                 } else {
-                    // 領域外
-                    color = Colors.Numeric.DarkBlue;
+                    // 未踏破
+                    color = Colors.Numeric.DarkSlateGray;
                 }
                 // タイル描画
                 let tilex = dx * tileWidth;

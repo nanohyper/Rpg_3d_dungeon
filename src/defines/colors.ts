@@ -10,6 +10,8 @@ export const Colors = {
         DodgerBlue : "#1e90ff",
         Red : "#ff0000",
         Gold : "#ffd700",
+        MediumAquamarine : "#66cdaa",
+        DarkSlateGray : "#2f4f4f",
     },
     Numeric : {
         White : 0xffffff,
@@ -21,6 +23,8 @@ export const Colors = {
         DeepSkyBlue : 0x00bfff,
         DodgerBlue : 0x1e90ff,
         Red : 0xff0000,
-        Gold : 0xffd700
+        Gold : 0xffd700,
+        MediumAquamarine : 0x66cdaa,
+        DarkSlateGray : 0x2f4f4f,
     }
 }
